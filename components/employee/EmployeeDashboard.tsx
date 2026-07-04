@@ -47,6 +47,10 @@ const quickAccessCards = [
 export default function EmployeeDashboard() {
   const [activeTab, setActiveTab] = useState<TabKey>("dashboard");
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  const isTestUser = ["emp-1", "emp-2", "emp-5", "emp-6", "emp-7", "emp-8", "emp-9", "emp-10"].includes(user?.id || "");
+  const userActivityFeed = isTestUser ? activityFeed : [];
 
   const content = useMemo(() => {
     switch (activeTab) {
@@ -101,41 +105,48 @@ export default function EmployeeDashboard() {
                 Recent Activity & Alerts
               </h3>
               <div className="space-y-3">
-                {activityFeed.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 hover:bg-white/[0.05] transition-colors"
-                  >
-                    <div className={`mt-1 flex-shrink-0 w-2 h-2 rounded-full ${
-                      item.type === "task"
-                        ? "bg-primary"
-                        : item.type === "credit"
-                        ? "bg-amber-400"
-                        : item.type === "leave"
-                        ? "bg-sky-400"
-                        : item.type === "attendance"
-                        ? "bg-emerald-400"
-                        : "bg-muted-foreground"
-                    }`} />
-                    <div className="flex-1">
-                      <p className="text-sm text-foreground">{item.text}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{item.time}</p>
+                {userActivityFeed.length > 0 ? (
+                  userActivityFeed.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 hover:bg-white/[0.05] transition-colors"
+                    >
+                      <div className={`mt-1 flex-shrink-0 w-2 h-2 rounded-full ${
+                        item.type === "task"
+                          ? "bg-primary"
+                          : item.type === "credit"
+                          ? "bg-amber-400"
+                          : item.type === "leave"
+                          ? "bg-sky-400"
+                          : item.type === "attendance"
+                          ? "bg-emerald-400"
+                          : "bg-muted-foreground"
+                      }`} />
+                      <div className="flex-1">
+                        <p className="text-sm text-foreground">{item.text}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{item.time}</p>
+                      </div>
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                        item.type === "task"
+                          ? "bg-primary/15 text-primary"
+                          : item.type === "credit"
+                          ? "bg-amber-500/15 text-amber-400"
+                          : item.type === "leave"
+                          ? "bg-sky-500/15 text-sky-400"
+                          : item.type === "attendance"
+                          ? "bg-emerald-500/15 text-emerald-400"
+                          : "bg-white/[0.06] text-muted-foreground"
+                      }`}>
+                        {item.type}
+                      </span>
                     </div>
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
-                      item.type === "task"
-                        ? "bg-primary/15 text-primary"
-                        : item.type === "credit"
-                        ? "bg-amber-500/15 text-amber-400"
-                        : item.type === "leave"
-                        ? "bg-sky-500/15 text-sky-400"
-                        : item.type === "attendance"
-                        ? "bg-emerald-500/15 text-emerald-400"
-                        : "bg-white/[0.06] text-muted-foreground"
-                    }`}>
-                      {item.type}
-                    </span>
+                  ))
+                ) : (
+                  <div className="text-center py-6">
+                    <p className="text-sm text-muted-foreground mb-1">No recent activity</p>
+                    <p className="text-xs text-muted-foreground/60">Your timeline is empty.</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

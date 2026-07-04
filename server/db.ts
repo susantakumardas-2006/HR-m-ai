@@ -1,4 +1,4 @@
-import Database from "better-sqlite3";
+import { DatabaseSync } from "node:sqlite";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -6,10 +6,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const dbPath = join(__dirname, "hrms.db");
 
 // Initialize database
-export const db = new Database(dbPath);
+export const db = new DatabaseSync(dbPath);
 
 // Enable foreign keys
-db.pragma("foreign_keys = ON");
+db.exec("PRAGMA foreign_keys = ON;");
 
 // Define schema
 export const initDb = () => {

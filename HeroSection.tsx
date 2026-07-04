@@ -72,7 +72,7 @@ export default function HeroSection() {
           </div>
           {/* Right auth box */}
           <div
-            className="opacity-0 animate-fade-up will-change-transform"
+            className="opacity-0 animate-fade-up will-change-transform pointer-events-auto"
             style={{ animationDelay: "0.5s" }}
           >
             <div className="relative">

@@ -11,7 +11,6 @@
     "build": "tsc"
   },
   "dependencies": {
-    "better-sqlite3": "^11.1.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
@@ -20,7 +19,6 @@
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.11",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",

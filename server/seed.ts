@@ -11,10 +11,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const defaultPassword = bcrypt.hashSync("Password@123", 10);
 
 const employees = [
-  { id: "emp-1", name: "Arjun Mehta", email: "arjun@sentinel.ai", department: "Engineering", role: "employee", initials: "AM", color: "#4ade80", status: "online", joinDate: "2024-03-15", phone: "+91 98765 43210", address: "42 MG Road, Bangalore, KA 560001", designation: "Software Engineer", managerId: "emp-5" },
-  { id: "emp-2", name: "Priya Sharma", email: "priya@sentinel.ai", department: "Design", role: "employee", initials: "PS", color: "#60a5fa", status: "online", joinDate: "2024-01-10", phone: "+91 98765 43211", address: "15 Koramangala, Bangalore, KA 560034", designation: "UI/UX Designer", managerId: "emp-5" },
+  // Managers first to satisfy foreign key constraints
   { id: "emp-5", name: "Vikram Singh", email: "vikram@sentinel.ai", department: "Engineering", role: "manager", initials: "VS", color: "#a78bfa", status: "online", joinDate: "2023-05-12", phone: "+91 98765 43214", address: "12 Whitefield, Bangalore, KA 560066", designation: "Engineering Manager", managerId: null },
   { id: "emp-6", name: "Ananya Iyer", email: "ananya@sentinel.ai", department: "HR", role: "hr", initials: "AI", color: "#fb923c", status: "online", joinDate: "2023-08-25", phone: "+91 98765 43215", address: "7 JP Nagar, Bangalore, KA 560078", designation: "HR Manager", managerId: null },
+  // Employees reporting to managers
+  { id: "emp-1", name: "Arjun Mehta", email: "arjun@sentinel.ai", department: "Engineering", role: "employee", initials: "AM", color: "#4ade80", status: "online", joinDate: "2024-03-15", phone: "+91 98765 43210", address: "42 MG Road, Bangalore, KA 560001", designation: "Software Engineer", managerId: "emp-5" },
+  { id: "emp-2", name: "Priya Sharma", email: "priya@sentinel.ai", department: "Design", role: "employee", initials: "PS", color: "#60a5fa", status: "online", joinDate: "2024-01-10", phone: "+91 98765 43211", address: "15 Koramangala, Bangalore, KA 560034", designation: "UI/UX Designer", managerId: "emp-5" },
 ];
 
 const documents = [
@@ -25,6 +27,21 @@ const documents = [
 const payrolls = [
   { id: "pay-1", employeeId: "emp-1", baseSalary: 85000, hra: 34000, specialAllowance: 15000, conveyance: 2000, medical: 1500, grossSalary: 137500, status: "paid" },
   { id: "pay-5", employeeId: "emp-5", baseSalary: 120000, hra: 48000, specialAllowance: 25000, conveyance: 2000, medical: 1500, grossSalary: 196500, status: "processing" },
+  { id: "pay-6", employeeId: "emp-6", baseSalary: 95000, hra: 38000, specialAllowance: 18000, conveyance: 2000, medical: 1500, grossSalary: 154500, status: "paid" },
+];
+
+const today = new Date().toISOString().split("T")[0];
+const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+
+const attendance = [
+  { id: "att-1", employeeId: "emp-1", date: today, checkIn: "09:05:00", checkOut: null, hours: null, status: "present" },
+  { id: "att-2", employeeId: "emp-1", date: yesterday, checkIn: "09:00:00", checkOut: "18:00:00", hours: "09:00:00", status: "present" },
+  { id: "att-3", employeeId: "emp-6", date: today, checkIn: "08:55:00", checkOut: null, hours: null, status: "present" },
+];
+
+const leaves = [
+  { id: "lv-1", employeeId: "emp-1", employeeName: "Arjun Mehta", type: "Sick Leave", startDate: "2026-07-10", endDate: "2026-07-11", days: 2, status: "pending", reason: "Viral fever", hrComment: null },
+  { id: "lv-2", employeeId: "emp-2", employeeName: "Priya Sharma", type: "Casual Leave", startDate: "2026-06-01", endDate: "2026-06-05", days: 5, status: "approved", reason: "Family vacation", hrComment: "Enjoy your trip!" },
 ];
 
 console.log("Initializing DB schema...");
@@ -53,6 +70,17 @@ console.log("Seeding payroll...");
 const insertPay = db.prepare("INSERT INTO payroll (id, employeeId, baseSalary, hra, specialAllowance, conveyance, medical, grossSalary, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 for (const pay of payrolls) {
   insertPay.run(pay.id, pay.employeeId, pay.baseSalary, pay.hra, pay.specialAllowance, pay.conveyance, pay.medical, pay.grossSalary, pay.status);
+}
+
+console.log("Seeding attendance & leaves...");
+const insertAtt = db.prepare("INSERT INTO attendance (id, employeeId, date, checkIn, checkOut, hours, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+for (const att of attendance) {
+  insertAtt.run(att.id, att.employeeId, att.date, att.checkIn, att.checkOut, att.hours, att.status);
+}
+
+const insertLv = db.prepare("INSERT INTO leave_requests (id, employeeId, employeeName, type, startDate, endDate, days, status, reason, hrComment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+for (const lv of leaves) {
+  insertLv.run(lv.id, lv.employeeId, lv.employeeName, lv.type, lv.startDate, lv.endDate, lv.days, lv.status, lv.reason, lv.hrComment);
 }
 
 console.log("Seed complete! Test users:");

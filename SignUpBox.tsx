@@ -64,17 +64,20 @@ export default function SignUpBox({ onSwitch }: SignUpBoxProps) {
     }
 
     try {
-      await apiFetch("/api/auth/register", {
+      const data = await apiFetch("/api/auth/register", {
         method: "POST",
         body: JSON.stringify({ employeeId, email, password, role }),
       });
 
+      // Auto login using the token returned from the registration endpoint
+      localStorage.setItem("jwt", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       // Simulate success and email verification message
       setSuccess(true);
       setTimeout(() => {
-        // Automatically swap to login after showing success
-        if (onSwitch) onSwitch();
-      }, 2500);
+        navigate(role === "employee" ? "/employee" : "/hr");
+      }, 1500);
     } catch (err: any) {
       setError(err.message || "Failed to register.");
     }

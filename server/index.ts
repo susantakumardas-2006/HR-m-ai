@@ -62,7 +62,8 @@ app.post("/api/auth/register", (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(employeeId, "New User", email, hash, "General", role, initials, color, "online", new Date().toISOString().split("T")[0], "", "", "Employee", null);
     
-    res.status(201).json({ message: "Account created successfully" });
+    const token = jwt.sign({ id: employeeId, email, role, name: "New User", initials, color }, JWT_SECRET, { expiresIn: "24h" });
+    res.status(201).json({ message: "Account created successfully", token, user: { id: employeeId, name: "New User", role, email } });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
