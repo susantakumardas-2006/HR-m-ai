@@ -1,0 +1,322 @@
+:root {
+  color-scheme: light;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f4f7f6;
+  color: #1a1d20;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.page-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--page-bg);
+  color: var(--text-color);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.page-shell.theme-employee {
+  --page-bg: #f4f7f6;
+  --card-bg: #ffffff;
+  --text-color: #1a1d20;
+  --muted-color: #63707f;
+  --accent-color: #0056d2;
+  --accent-contrast: #ffffff;
+  --input-border: #d7dde2;
+  --input-border-valid: #16a34a;
+  --input-border-invalid: #dc2626;
+  --input-bg: #ffffff;
+  --toggle-bg: #e9eef4;
+  --toggle-active: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+.page-shell.theme-admin {
+  --page-bg: #0b1319;
+  --card-bg: #15202b;
+  --text-color: #e1e8ed;
+  --muted-color: #92a0ae;
+  --accent-color: #f59e0b;
+  --accent-contrast: #0b1319;
+  --input-border: #37414f;
+  --input-border-valid: #22c55e;
+  --input-border-invalid: #f87171;
+  --input-bg: #0f1720;
+  --toggle-bg: #1f2a36;
+  --toggle-active: #f59e0b;
+  --shadow-color: rgba(0, 0, 0, 0.25);
+}
+
+.auth-card {
+  width: min(100%, 400px);
+  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--card-bg);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.logo {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.tagline {
+  text-align: center;
+  font-size: 14px;
+  margin: 0 0 8px;
+  color: var(--muted-color);
+}
+
+.role-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--toggle-bg);
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.role-toggle button {
+  position: relative;
+  z-index: 2;
+  border: 0;
+  background: transparent;
+  color: var(--muted-color);
+  border-radius: 999px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.role-toggle .active {
+  color: var(--accent-contrast);
+}
+
+.role-toggle .indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: var(--toggle-active);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.role-toggle[data-mode="employee"] .indicator {
+  transform: translateX(0);
+}
+
+.role-toggle[data-mode="admin"] .indicator {
+  transform: translateX(calc(100% + 4px));
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.input-base {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 14px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.input-base:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 20%, transparent);
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--muted-color);
+  padding: 4px;
+}
+
+.validation-message {
+  min-height: 16px;
+  font-size: 12px;
+  color: var(--input-border-invalid);
+}
+
+.btn-primary {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--accent-color);
+  color: var(--accent-contrast);
+  transition: transform 0.2s ease, background-color 0.4s ease, color 0.4s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.footer-links a {
+  font-size: 12px;
+  color: var(--muted-color);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: var(--accent-color);
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.dashboard-view {
+  width: min(100%, 760px);
+}
+
+.dashboard-shell {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 8px 30px var(--shadow-color);
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 11px;
+  color: var(--muted-color);
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.btn-secondary {
+  border: 1px solid var(--input-border);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-card {
+  border: 1px solid var(--input-border);
+  border-radius: 16px;
+  padding: 18px;
+  background: color-mix(in srgb, var(--card-bg) 90%, var(--accent-color) 10%);
+}
+
+.dashboard-card.highlight {
+  grid-column: span 2;
+}
+
+.dashboard-card h3 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.dashboard-card p,
+.dashboard-card li {
+  color: var(--muted-color);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.dashboard-card ul {
+  padding-left: 18px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .auth-card {
+    padding: 24px 20px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card.highlight {
+    grid-column: span 1;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
