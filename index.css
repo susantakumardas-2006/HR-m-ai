@@ -78,3 +78,14 @@ html {
 .cal-day-selected { @apply bg-primary/30 text-primary border border-primary/50; }
 .cal-day-range { @apply bg-primary/15 text-primary/80; }
 .cal-day-today { @apply ring-2 ring-primary/60; }
+
+/* Shake animation for error states */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-6px); }
+  30% { transform: translateX(5px); }
+  45% { transform: translateX(-4px); }
+  60% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+  90% { transform: translateX(1px); }
+}

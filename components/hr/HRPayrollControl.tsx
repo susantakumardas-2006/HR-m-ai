@@ -1,10 +1,37 @@
-import { useMemo, useState } from "react";
-import { payrollData } from "../../data/mockData";
+import { useMemo, useState, useEffect } from "react";
+import { apiFetch } from "../../api/client";
 
 export default function HRPayrollControl() {
-  const [rows, setRows] = useState(payrollData);
+  const [rows, setRows] = useState<any[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ baseSalary: 0, hra: 0, specialAllowance: 0, conveyance: 0, medical: 0, taxPercent: 0, pfPercent: 0 });
+
+  useEffect(() => {
+    async function loadPayroll() {
+      try {
+        const data = await apiFetch("/api/payroll");
+        // We might want to enrich it with employee names, but for now we map it.
+        // Assuming we also get employees to map names, or just use the data if names are returned.
+        const empData = await apiFetch("/api/employees");
+        
+        const enriched = data.map((pay: any) => {
+           const emp = empData.find((e: any) => e.id === pay.employeeId);
+           return {
+             ...pay,
+             employeeName: emp?.name || pay.employeeId,
+             department: emp?.department || "Unknown",
+             taxPercent: 10, // mock percentage
+             pfPercent: 12, // mock percentage
+             netPay: pay.grossSalary - Math.round(pay.grossSalary * 0.22)
+           };
+        });
+        setRows(enriched);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    loadPayroll();
+  }, []);
 
   const totals = useMemo(() => {
     const totalNet = rows.reduce((sum, row) => sum + row.netPay, 0);
@@ -17,10 +44,36 @@ export default function HRPayrollControl() {
     setForm({ baseSalary: row.baseSalary, hra: row.hra, specialAllowance: row.specialAllowance, conveyance: row.conveyance, medical: row.medical, taxPercent: row.taxPercent, pfPercent: row.pfPercent });
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editingId) return;
-    setRows((current) => current.map((row) => row.employeeId === editingId ? { ...row, baseSalary: form.baseSalary, hra: form.hra, specialAllowance: form.specialAllowance, conveyance: form.conveyance, medical: form.medical, taxPercent: form.taxPercent, pfPercent: form.pfPercent, grossSalary: form.baseSalary + form.hra + form.specialAllowance + form.conveyance + form.medical, deductions: Math.round((form.baseSalary + form.hra + form.specialAllowance + form.conveyance + form.medical) * (form.taxPercent / 100 + form.pfPercent / 100)), netPay: form.baseSalary + form.hra + form.specialAllowance + form.conveyance + form.medical - Math.round((form.baseSalary + form.hra + form.specialAllowance + form.conveyance + form.medical) * (form.taxPercent / 100 + form.pfPercent / 100)) } : row));
-    setEditingId(null);
+    try {
+      const targetRow = rows.find(r => r.employeeId === editingId);
+      if(!targetRow) return;
+
+      const res = await apiFetch(`/api/payroll/${targetRow.id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+           ...form,
+           status: targetRow.status
+        })
+      });
+
+      setRows((current) => current.map((row) => row.employeeId === editingId ? { 
+        ...row, 
+        baseSalary: form.baseSalary, 
+        hra: form.hra, 
+        specialAllowance: form.specialAllowance, 
+        conveyance: form.conveyance, 
+        medical: form.medical, 
+        taxPercent: form.taxPercent, 
+        pfPercent: form.pfPercent, 
+        grossSalary: res.grossSalary,
+        netPay: res.grossSalary - Math.round(res.grossSalary * (form.taxPercent / 100 + form.pfPercent / 100)) 
+      } : row));
+      setEditingId(null);
+    } catch(e) {
+      console.error(e);
+    }
   };
 
   return (
