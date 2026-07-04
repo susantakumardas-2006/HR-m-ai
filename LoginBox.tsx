@@ -1,13 +1,23 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./button";
+
 type LoginMode = "employee" | "hr";
+
 export default function LoginBox() {
   const [mode, setMode] = useState<LoginMode>("employee");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log(`Login as ${mode}:`, { email, password });
+
+    if (!email.trim() || !password.trim()) {
+      return;
+    }
+
+    navigate(mode === "employee" ? "/employee" : "/hr");
   };
   return (
     <div className="pointer-events-auto w-full max-w-sm">

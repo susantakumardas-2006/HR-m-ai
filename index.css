@@ -20,6 +20,10 @@
     --radius: 0.5rem;
     --nav-button: 0 0% 18%;
     --hero-bg: 0 0% 8%;
+    --card: 0 0% 13%;
+    --card-foreground: 0 0% 96%;
+    --sidebar: 0 0% 11%;
+    --chat-bg: 0 0% 12%;
   }
 }
 @layer base {
@@ -33,3 +37,44 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--hero-bg));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Contribution tree cells */
+.contribution-cell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  transition: all 0.15s ease;
+}
+.contribution-cell:hover {
+  transform: scale(1.4);
+  outline: 1px solid hsl(var(--foreground) / 0.3);
+}
+
+/* Calendar day cells */
+.cal-day {
+  @apply w-9 h-9 rounded-lg flex items-center justify-center text-xs font-medium transition-all duration-150 cursor-default;
+}
+.cal-day-present { @apply bg-green-500/20 text-green-400 border border-green-500/40; }
+.cal-day-absent { @apply bg-red-500/20 text-red-400 border border-red-500/40; }
+.cal-day-halfday { @apply bg-amber-500/20 text-amber-400 border border-amber-500/40; }
+.cal-day-leave { @apply bg-blue-500/20 text-blue-400 border border-blue-500/40; }
+.cal-day-weekend { @apply bg-white/[0.03] text-muted-foreground/50; }
+.cal-day-selected { @apply bg-primary/30 text-primary border border-primary/50; }
+.cal-day-range { @apply bg-primary/15 text-primary/80; }
+.cal-day-today { @apply ring-2 ring-primary/60; }

@@ -34,8 +34,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
         "nav-button": "hsl(var(--nav-button))",
         "hero-bg": "hsl(var(--hero-bg))",
+        sidebar: "hsl(var(--sidebar))",
+        "chat-bg": "hsl(var(--chat-bg))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -59,10 +65,20 @@ const config: Config = {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        "slide-down": {
+          "0%": { opacity: "0", transform: "translateY(-8px) scale(0.96)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        "slide-in-left": {
+          "0%": { opacity: "0", transform: "translateX(-12px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "fade-in": "fade-in 0.5s ease-out forwards",
+        "slide-down": "slide-down 0.2s ease-out forwards",
+        "slide-in-left": "slide-in-left 0.3s ease-out forwards",
       },
     },
   },
