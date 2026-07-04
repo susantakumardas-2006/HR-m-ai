@@ -1,27 +1,71 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./button";
+import { apiFetch } from "./api/client";
 
 type LoginMode = "employee" | "hr";
 
-export default function LoginBox() {
+interface LoginBoxProps {
+  onSwitch?: () => void;
+}
+
+export default function LoginBox({ onSwitch }: LoginBoxProps) {
   const [mode, setMode] = useState<LoginMode>("employee");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [shaking, setShaking] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  // Auto-dismiss error
+  useEffect(() => {
+    if (!error) return;
+    const timer = setTimeout(() => setError(""), 5000);
+    return () => clearTimeout(timer);
+  }, [error]);
 
-    if (!email.trim() || !password.trim()) {
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email.trim()) {
+      triggerError("Please enter your email address.");
+      return;
+    }
+    if (!password.trim()) {
+      triggerError("Please enter your password.");
       return;
     }
 
-    navigate(mode === "employee" ? "/employee" : "/hr");
+    try {
+      const data = await apiFetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password, role: mode }),
+      });
+
+      // Save token and user details
+      localStorage.setItem("jwt", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      navigate(mode === "employee" ? "/employee" : "/hr");
+    } catch (err: any) {
+      triggerError(err.message || "Invalid email or password. Please try again.");
+    }
   };
+
+  const triggerError = (msg: string) => {
+    setError(msg);
+    setShaking(true);
+    setTimeout(() => setShaking(false), 400);
+  };
+
   return (
     <div className="pointer-events-auto w-full max-w-sm">
-      <div className="rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-8 shadow-2xl shadow-black/40">
+      <div
+        className={`rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-xl p-8 shadow-2xl shadow-black/40 transition-transform ${
+          shaking ? "animate-[shake_0.35s_ease-in-out]" : ""
+        }`}
+      >
         {/* Heading */}
         <h2 className="text-foreground text-lg font-semibold mb-1 tracking-tight">
           Welcome Back
@@ -54,6 +98,17 @@ export default function LoginBox() {
             HR
           </button>
         </div>
+
+        {/* Error banner */}
+        {error && (
+          <div className="rounded-lg bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-400 mb-4 animate-fade-up flex items-center gap-2">
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {error}
+          </div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -99,15 +154,21 @@ export default function LoginBox() {
             {mode === "employee" ? "Employee Login" : "HR Login"}
           </Button>
         </form>
-        <p className="text-center text-muted-foreground text-xs mt-5">
-          Forgot password?{" "}
+        <div className="flex items-center justify-between mt-5">
           <a
             href="#"
-            className="text-primary hover:text-primary/80 transition-colors"
+            className="text-muted-foreground text-xs hover:text-primary/80 transition-colors"
           >
-            Reset here
+            Forgot password?
           </a>
-        </p>
+          <button
+            type="button"
+            onClick={onSwitch}
+            className="text-primary text-xs hover:text-primary/80 transition-colors"
+          >
+            Create account
+          </button>
+        </div>
       </div>
     </div>
   );

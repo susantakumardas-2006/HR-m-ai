@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import DashboardLayout from "../layout/DashboardLayout";
 import HRSidebar from "./HRSidebar";
-import EmployeeList from "./EmployeeList";
-import HRAttendanceRecords from "./HRAttendanceRecords";
-import HRLeaveApprovals from "./HRLeaveApprovals";
-import HRPayrollControl from "./HRPayrollControl";
+
+const EmployeeList = React.lazy(() => import("./EmployeeList"));
+const HRAttendanceRecords = React.lazy(() => import("./HRAttendanceRecords"));
+const HRLeaveApprovals = React.lazy(() => import("./HRLeaveApprovals"));
+const HRPayrollControl = React.lazy(() => import("./HRPayrollControl"));
 
 export default function HRDashboard() {
   const [activeTab, setActiveTab] = useState<"employees" | "attendance" | "leave" | "payroll">("employees");
@@ -12,13 +13,13 @@ export default function HRDashboard() {
   const content = useMemo(() => {
     switch (activeTab) {
       case "attendance":
-        return <HRAttendanceRecords />;
+        return <Suspense fallback={<div className="p-6 text-muted-foreground">Loading...</div>}><HRAttendanceRecords /></Suspense>;
       case "leave":
-        return <HRLeaveApprovals />;
+        return <Suspense fallback={<div className="p-6 text-muted-foreground">Loading...</div>}><HRLeaveApprovals /></Suspense>;
       case "payroll":
-        return <HRPayrollControl />;
+        return <Suspense fallback={<div className="p-6 text-muted-foreground">Loading...</div>}><HRPayrollControl /></Suspense>;
       default:
-        return <EmployeeList />;
+        return <Suspense fallback={<div className="p-6 text-muted-foreground">Loading...</div>}><EmployeeList /></Suspense>;
     }
   }, [activeTab]);
 

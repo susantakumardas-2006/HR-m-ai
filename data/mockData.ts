@@ -11,6 +11,13 @@ export type LeaveType = "paid" | "sick" | "unpaid";
 export type LeaveStatus = "pending" | "approved" | "rejected";
 export type PayrollStatus = "paid" | "processing" | "pending";
 
+export interface EmployeeDocument {
+  id: string;
+  name: string;
+  type: string;
+  uploadedAt: string;
+}
+
 export interface Employee {
   id: string;
   name: string;
@@ -21,6 +28,11 @@ export interface Employee {
   color: string;
   status: "online" | "away" | "offline";
   joinDate: string;
+  phone: string;
+  address: string;
+  designation: string;
+  managerId: string | null;
+  documents: EmployeeDocument[];
 }
 
 export interface Task {
@@ -115,16 +127,16 @@ export interface ActivityItem {
 
 // --- Employees ---
 export const employees: Employee[] = [
-  { id: "emp-1", name: "Arjun Mehta", email: "arjun@sentinel.ai", department: "Engineering", role: "employee", initials: "AM", color: "#4ade80", status: "online", joinDate: "2024-03-15" },
-  { id: "emp-2", name: "Priya Sharma", email: "priya@sentinel.ai", department: "Design", role: "employee", initials: "PS", color: "#60a5fa", status: "online", joinDate: "2024-01-10" },
-  { id: "emp-3", name: "Rahul Gupta", email: "rahul@sentinel.ai", department: "Engineering", role: "employee", initials: "RG", color: "#f472b6", status: "away", joinDate: "2023-11-20" },
-  { id: "emp-4", name: "Sneha Reddy", email: "sneha@sentinel.ai", department: "Marketing", role: "employee", initials: "SR", color: "#facc15", status: "online", joinDate: "2024-06-01" },
-  { id: "emp-5", name: "Vikram Singh", email: "vikram@sentinel.ai", department: "Engineering", role: "manager", initials: "VS", color: "#a78bfa", status: "online", joinDate: "2023-05-12" },
-  { id: "emp-6", name: "Ananya Iyer", email: "ananya@sentinel.ai", department: "HR", role: "hr", initials: "AI", color: "#fb923c", status: "online", joinDate: "2023-08-25" },
-  { id: "emp-7", name: "Karan Patel", email: "karan@sentinel.ai", department: "Finance", role: "employee", initials: "KP", color: "#2dd4bf", status: "offline", joinDate: "2024-02-14" },
-  { id: "emp-8", name: "Meera Nair", email: "meera@sentinel.ai", department: "Design", role: "employee", initials: "MN", color: "#e879f9", status: "away", joinDate: "2024-04-08" },
-  { id: "emp-9", name: "Deepak Kumar", email: "deepak@sentinel.ai", department: "Engineering", role: "employee", initials: "DK", color: "#34d399", status: "online", joinDate: "2023-09-30" },
-  { id: "emp-10", name: "Ritu Verma", email: "ritu@sentinel.ai", department: "HR", role: "hr", initials: "RV", color: "#f87171", status: "online", joinDate: "2023-07-15" },
+  { id: "emp-1", name: "Arjun Mehta", email: "arjun@sentinel.ai", department: "Engineering", role: "employee", initials: "AM", color: "#4ade80", status: "online", joinDate: "2024-03-15", phone: "+91 98765 43210", address: "42 MG Road, Bangalore, KA 560001", designation: "Software Engineer", managerId: "emp-5", documents: [{ id: "d-1", name: "Aadhar Card", type: "Identity", uploadedAt: "2024-03-15" }, { id: "d-2", name: "PAN Card", type: "Tax", uploadedAt: "2024-03-15" }, { id: "d-3", name: "Offer Letter", type: "Employment", uploadedAt: "2024-03-10" }] },
+  { id: "emp-2", name: "Priya Sharma", email: "priya@sentinel.ai", department: "Design", role: "employee", initials: "PS", color: "#60a5fa", status: "online", joinDate: "2024-01-10", phone: "+91 98765 43211", address: "15 Koramangala, Bangalore, KA 560034", designation: "UI/UX Designer", managerId: "emp-5", documents: [{ id: "d-4", name: "Aadhar Card", type: "Identity", uploadedAt: "2024-01-10" }, { id: "d-5", name: "PAN Card", type: "Tax", uploadedAt: "2024-01-10" }] },
+  { id: "emp-3", name: "Rahul Gupta", email: "rahul@sentinel.ai", department: "Engineering", role: "employee", initials: "RG", color: "#f472b6", status: "away", joinDate: "2023-11-20", phone: "+91 98765 43212", address: "28 Indiranagar, Bangalore, KA 560038", designation: "Backend Developer", managerId: "emp-5", documents: [{ id: "d-6", name: "Aadhar Card", type: "Identity", uploadedAt: "2023-11-20" }, { id: "d-7", name: "Offer Letter", type: "Employment", uploadedAt: "2023-11-15" }] },
+  { id: "emp-4", name: "Sneha Reddy", email: "sneha@sentinel.ai", department: "Marketing", role: "employee", initials: "SR", color: "#facc15", status: "online", joinDate: "2024-06-01", phone: "+91 98765 43213", address: "5 HSR Layout, Bangalore, KA 560102", designation: "Marketing Specialist", managerId: "emp-5", documents: [{ id: "d-8", name: "Aadhar Card", type: "Identity", uploadedAt: "2024-06-01" }] },
+  { id: "emp-5", name: "Vikram Singh", email: "vikram@sentinel.ai", department: "Engineering", role: "manager", initials: "VS", color: "#a78bfa", status: "online", joinDate: "2023-05-12", phone: "+91 98765 43214", address: "12 Whitefield, Bangalore, KA 560066", designation: "Engineering Manager", managerId: null, documents: [{ id: "d-9", name: "Aadhar Card", type: "Identity", uploadedAt: "2023-05-12" }, { id: "d-10", name: "PAN Card", type: "Tax", uploadedAt: "2023-05-12" }, { id: "d-11", name: "Offer Letter", type: "Employment", uploadedAt: "2023-05-08" }] },
+  { id: "emp-6", name: "Ananya Iyer", email: "ananya@sentinel.ai", department: "HR", role: "hr", initials: "AI", color: "#fb923c", status: "online", joinDate: "2023-08-25", phone: "+91 98765 43215", address: "7 JP Nagar, Bangalore, KA 560078", designation: "HR Manager", managerId: null, documents: [{ id: "d-12", name: "Aadhar Card", type: "Identity", uploadedAt: "2023-08-25" }, { id: "d-13", name: "PAN Card", type: "Tax", uploadedAt: "2023-08-25" }] },
+  { id: "emp-7", name: "Karan Patel", email: "karan@sentinel.ai", department: "Finance", role: "employee", initials: "KP", color: "#2dd4bf", status: "offline", joinDate: "2024-02-14", phone: "+91 98765 43216", address: "20 Electronic City, Bangalore, KA 560100", designation: "Financial Analyst", managerId: "emp-5", documents: [{ id: "d-14", name: "Aadhar Card", type: "Identity", uploadedAt: "2024-02-14" }] },
+  { id: "emp-8", name: "Meera Nair", email: "meera@sentinel.ai", department: "Design", role: "employee", initials: "MN", color: "#e879f9", status: "away", joinDate: "2024-04-08", phone: "+91 98765 43217", address: "33 Jayanagar, Bangalore, KA 560041", designation: "Visual Designer", managerId: "emp-5", documents: [{ id: "d-15", name: "Aadhar Card", type: "Identity", uploadedAt: "2024-04-08" }, { id: "d-16", name: "Offer Letter", type: "Employment", uploadedAt: "2024-04-05" }] },
+  { id: "emp-9", name: "Deepak Kumar", email: "deepak@sentinel.ai", department: "Engineering", role: "employee", initials: "DK", color: "#34d399", status: "online", joinDate: "2023-09-30", phone: "+91 98765 43218", address: "18 Marathahalli, Bangalore, KA 560037", designation: "DevOps Engineer", managerId: "emp-5", documents: [{ id: "d-17", name: "Aadhar Card", type: "Identity", uploadedAt: "2023-09-30" }, { id: "d-18", name: "PAN Card", type: "Tax", uploadedAt: "2023-09-30" }] },
+  { id: "emp-10", name: "Ritu Verma", email: "ritu@sentinel.ai", department: "HR", role: "hr", initials: "RV", color: "#f87171", status: "online", joinDate: "2023-07-15", phone: "+91 98765 43219", address: "9 BTM Layout, Bangalore, KA 560076", designation: "HR Executive", managerId: "emp-6", documents: [{ id: "d-19", name: "Aadhar Card", type: "Identity", uploadedAt: "2023-07-15" }] },
 ];
 
 // --- Tasks ---
